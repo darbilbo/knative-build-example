@@ -3,7 +3,7 @@
 FROM golang
 
 # Copy the local package files to the container's workspace.
-ADD . /knative-build-demo
+ADD helloworld.go /knative-build-demo
 
 # Move into the directory with our code and build it
 WORKDIR /knative-build-demo
