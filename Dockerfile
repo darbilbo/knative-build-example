@@ -1,23 +1,16 @@
-# Use the offical Golang image to create a build artifact.
-# This is based on Debian and sets the GOPATH to /go.
-# https://hub.docker.com/_/golang
-FROM golang:1.12 as builder
+# Start from a Debian image with the latest version of Go installed
+# and a workspace (GOPATH) configured at /go.
+FROM golang
 
-# Copy local code to the container image.
-WORKDIR /go/src/github.com/knative/docs/helloworld
-COPY . .
+# Copy the local package files to the container's workspace.
+ADD . /knative-build-demo
 
- # Build the command inside the container.
-# (You may fetch or manage dependencies here,
-# either manually or with a tool like "godep".)
-RUN CGO_ENABLED=0 GOOS=linux go build -v -o helloworld
+# Move into the directory with our code and build it
+WORKDIR /knative-build-demo
+RUN go build 
 
-# Use a Docker multi-stage build to create a lean production image.
-# https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds
-FROM alpine
+# Run our application by default when the container starts.
+ENTRYPOINT ./knative-build-demo
 
-# Copy the binary to the production image from the builder stage.
-COPY --from=builder /go/src/github.com/knative/docs/helloworld/helloworld /helloworld
-
-# Run the web service on container startup.
-CMD ["/helloworld"]
+# Document that the service listens on port 8080.
+EXPOSE 8080
