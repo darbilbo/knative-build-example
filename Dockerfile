@@ -3,14 +3,14 @@
 FROM golang
 
 # Copy the local package files to the container's workspace.
-ADD helloworld.go /knative-build-demo
+ADD . /knative-build
 
 # Move into the directory with our code and build it
-WORKDIR /knative-build-demo
+WORKDIR /knative-build
 RUN go build 
 
 # Run our application by default when the container starts.
-ENTRYPOINT ./knative-build-demo
+ENTRYPOINT ./knative-build
 
 # Document that the service listens on port 8080.
 EXPOSE 8080
